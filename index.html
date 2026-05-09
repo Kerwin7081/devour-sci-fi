@@ -1,166 +1,245 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>吞噬 — 叶宇凡</title>
- <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
- <style>
- :root {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>吞噬 — 叶宇凡</title>
+<style>
+/* ── RESET ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+/* ── TOKENS ── */
+:root {
  --void: #010912;
  --deep: #050f1e;
- --mid: #0a1a2e;
  --alien: #5ce8ff;
- --alien-dim: #1a5a6e;
+ --adim: #1a5a6e;
  --gold: #e8a830;
  --silver: #c0d8f0;
  --text: #b8c8d8;
- --text-bright:#e0ecf8;
+ --bright: #e0ecf8;
  --danger: #ff5a38;
  --crystal: #a8e0ff;
- }
+}
 
- *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
- html { scroll-behavior: smooth; }
-
- body {
+/* ── BASE ── */
+body {
  background: var(--void);
  color: var(--text);
- font-family: 'Noto Serif SC', serif;
+ font-family: 'PingFang SC','Hiragino Sans GB','Microsoft YaHei','WenQuanYi Micro Hei',
+ 'STSong','SimSun',serif;
  font-weight: 300;
  overflow-x: hidden;
  line-height: 1.95;
- }
+}
 
- /* ── STARFIELD CANVAS ── */
- #starfield {
- position: fixed;
- inset: 0;
- z-index: 0;
- pointer-events: none;
- }
+/* ── STARFIELD CANVAS ── */
+#sf { position:fixed; inset:0; z-index:0; pointer-events:none; }
 
- /* ── LAYOUT ── */
- .content { position: relative; z-index: 1; }
+/* ── CONTENT LAYER ── */
+.page { position:relative; z-index:1; }
 
- /* ── HERO ── */
- .hero {
+/* ═══════════════════════════════════
+ HERO
+═══════════════════════════════════ */
+.hero {
  min-height: 100vh;
  display: flex;
  flex-direction: column;
  align-items: center;
  justify-content: center;
  text-align: center;
- padding: 5rem 2rem 8rem;
+ padding: 5rem 2rem 9rem;
  position: relative;
- }
+}
+.hero::after {
+ content:'';
+ position:absolute; bottom:0; left:0; right:0;
+ height:200px;
+ background:linear-gradient(transparent, var(--void));
+ pointer-events:none;
+}
 
- .hero::after {
- content: '';
- position: absolute;
- bottom: 0; left: 0; right: 0;
- height: 220px;
- background: linear-gradient(transparent, var(--void));
- pointer-events: none;
- }
-
- .hero-eyebrow {
- font-family: 'Orbitron', monospace;
- font-size: .6rem;
- letter-spacing: .4rem;
+.eyebrow {
+ font-family: 'Courier New', 'Lucida Console', monospace;
+ font-size: .62rem;
+ letter-spacing: .45rem;
  color: var(--alien);
- opacity: .5;
+ opacity: .45;
  text-transform: uppercase;
  margin-bottom: 2.5rem;
- }
+}
 
- .hero-title {
- font-size: clamp(5.5rem, 22vw, 13rem);
- font-weight: 700;
+.title {
+ font-size: clamp(5rem, 22vw, 13rem);
+ font-weight: 900;
  letter-spacing: .6rem;
  line-height: 1;
- background: linear-gradient(150deg, #ddf0ff 0%, #aad8ff 40%, #5ce8ff 68%, #fff 100%);
+ background: linear-gradient(150deg, #ddf0ff 0%, #aad8ff 42%, #5ce8ff 68%, #fff 100%);
  -webkit-background-clip: text;
  background-clip: text;
  color: transparent;
- filter: drop-shadow(0 0 50px rgba(92,232,255,.25));
- animation: titleGlow 5s ease-in-out infinite alternate;
+ animation: tglow 5s ease-in-out infinite alternate;
  margin-bottom: 2.5rem;
- }
-
- @keyframes titleGlow {
+}
+@keyframes tglow {
  from { filter: drop-shadow(0 0 30px rgba(92,232,255,.2)); }
- to { filter: drop-shadow(0 0 90px rgba(92,232,255,.55)); }
- }
+ to { filter: drop-shadow(0 0 100px rgba(92,232,255,.6)); }
+}
 
- .hero-meta {
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: .8rem;
- }
-
- .hero-author {
+.author {
  font-size: 1rem;
  color: var(--text);
- opacity: .7;
- letter-spacing: .25rem;
- }
-
- .hero-coords {
- font-family: 'Orbitron', monospace;
- font-size: .6rem;
- letter-spacing: .25rem;
+ opacity: .65;
+ letter-spacing: .28rem;
+ margin-bottom: .7rem;
+}
+.coords {
+ font-family: 'Courier New', monospace;
+ font-size: .58rem;
+ letter-spacing: .22rem;
  color: var(--alien);
- opacity: .35;
- }
+ opacity: .3;
+}
 
- .scroll-cue {
- position: absolute;
- bottom: 3.5rem;
- left: 50%;
- transform: translateX(-50%);
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: .6rem;
- z-index: 2;
- animation: cuePulse 2.4s ease-in-out infinite;
- }
+/* scroll cue */
+.cue {
+ position:absolute; bottom:3.5rem; left:50%;
+ transform:translateX(-50%);
+ display:flex; flex-direction:column; align-items:center; gap:.6rem;
+ z-index:2;
+ animation: cued 2.5s ease-in-out infinite;
+}
+.cue span { font-family:'Courier New',monospace; font-size:.55rem; letter-spacing:.28rem; color:var(--alien); opacity:.4; }
+.cue i { display:block; width:1px; height:46px; background:linear-gradient(var(--alien),transparent); opacity:.45; }
+@keyframes cued {
+ 0%,100%{ opacity:.25; transform:translateX(-50%) translateY(0); }
+ 50% { opacity:.6; transform:translateX(-50%) translateY(10px); }
+}
 
- .scroll-cue span {
- font-family: 'Orbitron', monospace;
- font-size: .55rem;
- letter-spacing: .25rem;
- color: var(--alien);
- opacity: .45;
- }
+/* ═══════════════════════════════════
+ CSS SCENE PANELS (replaces images)
+═══════════════════════════════════ */
+.scene {
+ position:relative;
+ width:100%;
+ height: clamp(260px, 42vw, 460px);
+ overflow:hidden;
+}
+.scene::before, .scene::after {
+ content:'';
+ position:absolute; left:0; right:0; height:100px; z-index:2; pointer-events:none;
+}
+.scene::before { top:0; background:linear-gradient(var(--void),transparent); }
+.scene::after { bottom:0; background:linear-gradient(transparent,var(--void)); }
 
- .scroll-cue i {
- display: block;
- width: 1px;
- height: 44px;
- background: linear-gradient(var(--alien), transparent);
- opacity: .5;
- }
+.scene-inner {
+ width:100%; height:100%;
+ position:relative;
+}
 
- @keyframes cuePulse {
- 0%,100% { opacity: .3; transform: translateX(-50%) translateY(0); }
- 50% { opacity: .7; transform: translateX(-50%) translateY(10px); }
- }
+/* Scene 1 – Deep Space */
+.scene-space .scene-inner {
+ background:
+ radial-gradient(ellipse 60% 60% at 70% 50%, rgba(92,232,255,.06) 0%, transparent 70%),
+ radial-gradient(ellipse 30% 40% at 20% 30%, rgba(180,120,255,.05) 0%, transparent 60%),
+ radial-gradient(ellipse 80% 80% at 50% 50%, #050f24 0%, #010912 100%);
+}
+.scene-space .ring {
+ position:absolute;
+ width:340px; height:340px;
+ border-radius:50%;
+ border:1px solid rgba(92,232,255,.08);
+ top:50%; left:55%;
+ transform:translate(-50%,-50%);
+ box-shadow:
+ 0 0 40px rgba(92,232,255,.05),
+ inset 0 0 40px rgba(92,232,255,.04);
+ animation: ringPulse 6s ease-in-out infinite;
+}
+.scene-space .ring2 {
+ width:200px; height:200px;
+ border-color:rgba(92,232,255,.12);
+ animation-delay:1.5s; animation-duration:4s;
+}
+.scene-space .ring3 {
+ width:500px; height:500px;
+ border-color:rgba(92,232,255,.04);
+ animation-delay:3s; animation-duration:8s;
+}
+@keyframes ringPulse {
+ 0%,100%{ opacity:.4; transform:translate(-50%,-50%) scale(1); }
+ 50% { opacity:1; transform:translate(-50%,-50%) scale(1.04); }
+}
+.scene-label {
+ position:absolute; bottom:1.6rem; right:2rem; z-index:3;
+ font-family:'Courier New',monospace; font-size:.54rem;
+ letter-spacing:.22rem; color:var(--alien); opacity:.45;
+}
 
- /* ── SECTION WRAPPER ── */
- .prose {
+/* Scene 2 – Alien Planet surface */
+.scene-planet .scene-inner {
+ background:
+ radial-gradient(ellipse 100% 50% at 50% 100%, #1a0a2a 0%, transparent 60%),
+ radial-gradient(ellipse 60% 30% at 30% 80%, rgba(80,30,100,.5) 0%, transparent 50%),
+ linear-gradient(180deg, #010912 0%, #0d0818 40%, #1a0d28 70%, #250a1a 100%);
+}
+.scene-planet .crack {
+ position:absolute;
+ background:linear-gradient(135deg, transparent 40%, rgba(180,100,255,.06) 50%, transparent 60%);
+ transform-origin: center;
+}
+.scene-planet .c1 { width:200%; height:1px; top:40%; left:-50%; transform:rotate(-8deg); }
+.scene-planet .c2 { width:200%; height:1px; top:60%; left:-50%; transform:rotate(12deg); }
+.scene-planet .c3 { width:200%; height:1px; top:72%; left:-50%; transform:rotate(-3deg); }
+.scene-planet .c4 { width:200%; height:1px; top:52%; left:-50%; transform:rotate(22deg); }
+.scene-planet .dust {
+ position:absolute;
+ width:2px; height:2px; border-radius:50%;
+ background:rgba(180,120,255,.4);
+ animation:dustFloat 8s ease-in-out infinite;
+}
+@keyframes dustFloat {
+ 0%,100%{ transform:translateY(0) translateX(0); opacity:.4; }
+ 50% { transform:translateY(-20px) translateX(8px); opacity:.8; }
+}
+
+/* Scene 3 – Return / Milky Way */
+.scene-galaxy .scene-inner {
+ background:
+ radial-gradient(ellipse 120% 50% at 50% 60%,
+ rgba(92,150,255,.08) 0%,
+ rgba(60,100,200,.05) 30%,
+ transparent 70%),
+ radial-gradient(ellipse 40% 80% at 50% 50%, #0a1530 0%, #010912 80%);
+}
+.scene-galaxy .band {
+ position:absolute;
+ width:140%; height:60px;
+ left:-20%; top:45%;
+ background:linear-gradient(transparent,
+ rgba(120,160,255,.06) 40%,
+ rgba(92,232,255,.04) 50%,
+ rgba(120,160,255,.06) 60%,
+ transparent);
+ transform:rotate(-15deg);
+ filter:blur(8px);
+}
+
+/* ═══════════════════════════════════
+ PROSE SECTIONS
+═══════════════════════════════════ */
+.prose {
  max-width: 720px;
  margin: 0 auto;
  padding: 4rem 2rem;
- }
+}
 
- /* ── SECTION LABEL ── */
- .label {
- font-family: 'Orbitron', monospace;
+.label {
+ font-family: 'Courier New', monospace;
  font-size: .6rem;
- letter-spacing: .35rem;
+ letter-spacing: .38rem;
  color: var(--alien);
  opacity: .5;
  text-transform: uppercase;
@@ -168,393 +247,207 @@
  align-items: center;
  gap: 1rem;
  margin-bottom: 2.5rem;
- }
+}
+.label::after {
+ content:'';
+ flex:1; height:1px;
+ background:linear-gradient(var(--adim),transparent);
+}
 
- .label::after {
- content: '';
- flex: 1;
- height: 1px;
- background: linear-gradient(var(--alien-dim), transparent);
- }
+p { font-size:1.05rem; margin-bottom:1.6rem; color:var(--text); }
 
- /* ── BODY TEXT ── */
- p {
- font-size: 1.05rem;
- margin-bottom: 1.6rem;
- color: var(--text);
- }
+/* stanza */
+.stanza {
+ text-align:center;
+ padding:3.5rem 1rem;
+ position:relative;
+}
+.stanza::before, .stanza::after {
+ content:'';
+ position:absolute; left:50%; transform:translateX(-50%);
+ width:80px; height:1px;
+ background:linear-gradient(transparent,rgba(92,232,255,.4),transparent);
+}
+.stanza::before{ top:0; } .stanza::after{ bottom:0; }
+.stanza p { font-size:1.22rem; color:var(--bright); font-weight:400; line-height:2.3; margin:0; }
 
- /* ── OPENING STANZA ── */
- .stanza {
- text-align: center;
- padding: 3.5rem 1rem;
- position: relative;
- }
+/* pull quotes */
+.pull {
+ border-left:2px solid var(--gold);
+ padding:.5rem 0 .5rem 1.6rem;
+ margin:2.5rem 0;
+ font-size:1rem;
+ color:var(--gold);
+ line-height:2;
+}
+.pull-blue { border-color:var(--alien); color:var(--alien); }
+.pull-white { border-color:var(--silver); color:var(--bright); }
 
- .stanza::before, .stanza::after {
- content: '';
- position: absolute;
- left: 50%;
- transform: translateX(-50%);
- width: 80px;
- height: 1px;
- background: linear-gradient(transparent, rgba(92,232,255,.4), transparent);
- }
- .stanza::before { top: 0; }
- .stanza::after { bottom: 0; }
+/* log */
+.log {
+ background:rgba(5,15,28,.9);
+ border:1px solid rgba(92,232,255,.1);
+ border-left:3px solid var(--alien);
+ border-radius:0 10px 10px 0;
+ padding:1.8rem 2.2rem;
+ margin:2.5rem 0;
+}
+.log-hd {
+ font-family:'Courier New',monospace;
+ font-size:.6rem; letter-spacing:.2rem; color:var(--alien); opacity:.7;
+ margin-bottom:1.4rem; padding-bottom:.8rem;
+ border-bottom:1px solid rgba(92,232,255,.1);
+}
+.log-row { display:flex; gap:2rem; align-items:baseline; margin-bottom:.9rem; }
+.log-day { font-family:'Courier New',monospace; font-size:.6rem; color:var(--gold); letter-spacing:.1rem; white-space:nowrap; min-width:88px; }
+.log-note { font-size:.9rem; color:var(--text); line-height:1.8; margin:0; }
+.log-row.crit .log-note { color:var(--danger); }
 
- .stanza p {
- font-size: 1.25rem;
- color: var(--text-bright);
- font-weight: 400;
- line-height: 2.2;
- margin: 0;
- }
-
- /* ── PULL QUOTE ── */
- .pull {
- border-left: 2px solid var(--gold);
- padding: .4rem 0 .4rem 1.6rem;
- margin: 2.5rem 0;
- font-size: 1rem;
- color: var(--gold);
- line-height: 1.9;
- }
-
- .pull-blue {
- border-left-color: var(--alien);
- color: var(--alien);
- }
-
- /* ── FLIGHT LOG ── */
- .log-box {
- background: rgba(5,15,28,.85);
- border: 1px solid rgba(92,232,255,.12);
- border-left: 3px solid var(--alien);
- border-radius: 0 10px 10px 0;
- padding: 1.8rem 2.2rem;
- margin: 2.5rem 0;
- backdrop-filter: blur(12px);
- }
-
- .log-header {
- font-family: 'Orbitron', monospace;
- font-size: .6rem;
- letter-spacing: .2rem;
- color: var(--alien);
- opacity: .7;
- margin-bottom: 1.4rem;
- padding-bottom: .8rem;
- border-bottom: 1px solid rgba(92,232,255,.1);
- }
-
- .log-row {
- display: flex;
- gap: 2rem;
- align-items: baseline;
- margin-bottom: 1rem;
- }
-
- .log-day {
- font-family: 'Orbitron', monospace;
- font-size: .6rem;
- color: var(--gold);
- letter-spacing: .1rem;
- white-space: nowrap;
- min-width: 90px;
- }
-
- .log-note {
- font-size: .9rem;
- color: var(--text);
- line-height: 1.8;
- margin: 0;
- }
-
- .log-row.critical .log-note { color: var(--danger); opacity: .9; }
-
- /* ── FULL-WIDTH IMAGE ── */
- .img-block {
- position: relative;
- width: 100%;
- max-width: 100vw;
- overflow: hidden;
- margin: 2rem 0;
- }
-
- .img-block img {
- width: 100%;
- height: clamp(260px, 45vw, 480px);
- object-fit: cover;
- filter: brightness(.45) saturate(.7) hue-rotate(-5deg);
- display: block;
- }
-
- .img-block::before, .img-block::after {
- content: '';
- position: absolute;
- left: 0; right: 0;
- height: 120px;
- z-index: 1;
- pointer-events: none;
- }
- .img-block::before { top: 0; background: linear-gradient(var(--void), transparent); }
- .img-block::after { bottom: 0; background: linear-gradient(transparent, var(--void)); }
-
- .img-caption {
- position: absolute;
- bottom: 1.6rem;
- right: 2rem;
- z-index: 2;
- font-family: 'Orbitron', monospace;
- font-size: .55rem;
- letter-spacing: .2rem;
- color: var(--alien);
- opacity: .5;
- }
-
- /* ── ALIEN ORB ── */
- .alien-stage {
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 2.5rem;
- padding: 3rem 1rem;
- }
-
- .orb {
- width: 110px;
- height: 110px;
- border-radius: 50%;
- background: radial-gradient(circle at 33% 30%, #b8f4ff, #2a90b8 45%, #051428 80%);
+/* alien orb */
+.orb-stage { display:flex; flex-direction:column; align-items:center; gap:2.5rem; padding:3rem 1rem; }
+.orb {
+ width:110px; height:110px; border-radius:50%;
+ background:radial-gradient(circle at 33% 30%, #b8f4ff, #2a90b8 45%, #051428 80%);
  box-shadow:
- 0 0 0 12px rgba(92,232,255,.04),
- 0 0 30px rgba(92,232,255,.35),
+ 0 0 0 14px rgba(92,232,255,.04),
+ 0 0 30px rgba(92,232,255,.38),
  0 0 80px rgba(92,232,255,.2),
  0 0 160px rgba(92,232,255,.1);
- animation: orbFloat 6s ease-in-out infinite, orbPulse 3.5s ease-in-out infinite;
- position: relative;
- }
+ animation:orbF 6s ease-in-out infinite, orbP 3.5s ease-in-out infinite;
+ position:relative;
+}
+.orb::after {
+ content:'';
+ position:absolute; inset:-18px; border-radius:50%;
+ background:radial-gradient(circle,rgba(92,232,255,.13),transparent 70%);
+ animation:orbP 3.5s ease-in-out infinite reverse;
+}
+@keyframes orbF { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+@keyframes orbP { 0%,100%{opacity:.6} 50%{opacity:1} }
+.orb-desc { text-align:center; max-width:480px; font-size:1rem; color:var(--bright); line-height:2.1; font-weight:400; }
 
- .orb::after {
- content: '';
- position: absolute;
- inset: -18px;
- border-radius: 50%;
- background: radial-gradient(circle, rgba(92,232,255,.12), transparent 70%);
- animation: orbPulse 3.5s ease-in-out infinite reverse;
- }
+/* crystal */
+.xtal-stage { display:flex; flex-direction:column; align-items:center; gap:1.5rem; padding:2.5rem 0; }
+.xtal {
+ width:44px; height:62px;
+ background:linear-gradient(140deg,#f0faff 0%,#90d4ff 40%,#c0ecff 70%,#e8f8ff 100%);
+ clip-path:polygon(50% 0%,100% 38%,85% 100%,15% 100%,0% 38%);
+ box-shadow:0 0 20px rgba(168,224,255,.7),0 0 60px rgba(168,224,255,.35);
+ animation:xtalG 2.8s ease-in-out infinite;
+}
+@keyframes xtalG {
+ 0%,100%{ filter:brightness(1) drop-shadow(0 0 8px #80c8ff); }
+ 50% { filter:brightness(1.5) drop-shadow(0 0 24px #b0e8ff); }
+}
+.xtal-lbl { font-family:'Courier New',monospace; font-size:.58rem; letter-spacing:.25rem; color:var(--crystal); opacity:.55; }
 
- @keyframes orbFloat {
- 0%,100% { transform: translateY(0); }
- 50% { transform: translateY(-18px); }
- }
+/* sacrifice scatter */
+.sacrifice { text-align:center; padding:3rem 1rem; }
+.scream { font-size:1.2rem; color:var(--bright); font-weight:400; line-height:2; margin-bottom:2rem; }
+.scatter { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:1.5rem; }
+.dot {
+ width:4px; height:4px; border-radius:50%; background:var(--alien);
+ animation:dotA var(--d,3s) ease-in-out infinite var(--dl,0s);
+}
+@keyframes dotA {
+ 0% { opacity:.8; transform:scale(1) translate(0,0); }
+ 50% { opacity:.3; transform:scale(.5) translate(var(--tx,4px),var(--ty,-10px)); }
+ 100%{ opacity:.8; transform:scale(1) translate(0,0); }
+}
 
- @keyframes orbPulse {
- 0%,100% { opacity: .7; }
- 50% { opacity: 1; }
- }
+/* divider */
+.div {
+ display:flex; align-items:center; justify-content:center;
+ gap:1rem; max-width:460px; margin:0 auto;
+ opacity:.3;
+}
+.div::before,.div::after {
+ content:''; flex:1; height:1px;
+ background:linear-gradient(transparent,rgba(92,232,255,.5),transparent);
+}
+.div-gem { width:6px; height:6px; background:var(--alien); transform:rotate(45deg); }
 
- .orb-desc {
- text-align: center;
- max-width: 480px;
- font-size: 1rem;
- color: var(--text-bright);
- line-height: 2;
- font-weight: 400;
- }
+/* ending */
+.ending { text-align:center; padding:5rem 2rem 3rem; }
+.ending-vista { font-size:1.15rem; color:var(--text); line-height:2.3; margin-bottom:3rem; }
+.ending-final {
+ font-size:1.15rem; color:var(--bright); font-weight:400; line-height:2.5;
+ border-top:1px solid rgba(92,232,255,.15);
+ border-bottom:1px solid rgba(92,232,255,.15);
+ padding:2.5rem 1.5rem; margin:2rem 0;
+}
+.ending-final strong {
+ display:block; font-size:1.35rem; font-weight:700;
+ color:var(--alien); margin-top:1.2rem; line-height:2.2;
+}
 
- /* ── CRYSTAL ── */
- .crystal-stage {
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 1.5rem;
- padding: 2.5rem 0;
- }
+/* footer */
+footer {
+ text-align:center; padding:4rem 2rem;
+ border-top:1px solid rgba(92,232,255,.06);
+}
+.ft {
+ font-family:'Courier New',monospace;
+ font-size:.58rem; letter-spacing:.28rem;
+ color:rgba(92,232,255,.22); line-height:2.8;
+}
+.ft-line { width:40px; height:1px; background:rgba(92,232,255,.18); margin:1.4rem auto; }
 
- .crystal {
- width: 44px;
- height: 62px;
- background: linear-gradient(140deg, #f0faff 0%, #90d4ff 40%, #c0ecff 70%, #e8f8ff 100%);
- clip-path: polygon(50% 0%, 100% 38%, 85% 100%, 15% 100%, 0% 38%);
- box-shadow: 0 0 20px rgba(168,224,255,.7), 0 0 60px rgba(168,224,255,.35);
- animation: crystalGlow 2.8s ease-in-out infinite;
- }
+/* ── FADE-IN ── */
+.fi { opacity:0; transform:translateY(26px); transition:opacity .85s ease,transform .85s ease; }
+.fi.on { opacity:1; transform:none; }
 
- @keyframes crystalGlow {
- 0%,100% { filter: brightness(1) drop-shadow(0 0 8px #80c8ff); }
- 50% { filter: brightness(1.5) drop-shadow(0 0 24px #b0e8ff); }
- }
-
- .crystal-label {
- font-family: 'Orbitron', monospace;
- font-size: .6rem;
- letter-spacing: .25rem;
- color: var(--crystal);
- opacity: .6;
- }
-
- /* ── DIVIDER ── */
- .divider {
- display: flex;
- align-items: center;
- justify-content: center;
- gap: 1.2rem;
- margin: 1rem auto;
- max-width: 500px;
- opacity: .35;
- }
-
- .divider::before, .divider::after {
- content: '';
- flex: 1;
- height: 1px;
- background: linear-gradient(transparent, rgba(92,232,255,.5), transparent);
- }
-
- .divider-star {
- width: 6px;
- height: 6px;
- background: var(--alien);
- transform: rotate(45deg);
- }
-
- /* ── SACRIFICE ── */
- .sacrifice-moment {
- text-align: center;
- padding: 3rem 1rem;
- }
-
- .sacrifice-moment .scream {
- font-size: 1.2rem;
- color: var(--text-bright);
- font-weight: 400;
- line-height: 2;
- margin-bottom: 2rem;
- }
-
- .scatter {
- display: flex;
- justify-content: center;
- gap: 6px;
- flex-wrap: wrap;
- margin-bottom: 1.5rem;
- }
-
- .scatter .dot {
- width: 4px;
- height: 4px;
- border-radius: 50%;
- background: var(--alien);
- animation: scatterAnim var(--dur,3s) ease-in-out infinite var(--delay,0s);
- }
-
- @keyframes scatterAnim {
- 0% { opacity:.8; transform: scale(1) translate(0,0); }
- 50% { opacity:.4; transform: scale(.5) translate(var(--tx,4px),var(--ty,-8px)); }
- 100% { opacity:.8; transform: scale(1) translate(0,0); }
- }
-
- /* ── ENDING ── */
- .ending {
- text-align: center;
- padding: 5rem 2rem 3rem;
- position: relative;
- }
-
- .ending-vista {
- font-size: 1.15rem;
- color: var(--text);
- line-height: 2.2;
- margin-bottom: 3rem;
- }
-
- .ending-final {
- font-size: 1.25rem;
- color: var(--text-bright);
- font-weight: 400;
- line-height: 2.4;
- border-top: 1px solid rgba(92,232,255,.15);
- border-bottom: 1px solid rgba(92,232,255,.15);
- padding: 2.5rem 1.5rem;
- margin: 2rem 0;
- }
-
- .ending-final strong {
- display: block;
- font-size: 1.4rem;
- font-weight: 700;
- color: var(--alien);
- margin-top: 1rem;
- line-height: 2;
- }
-
- /* ── FOOTER ── */
- footer {
- text-align: center;
- padding: 4rem 2rem;
- border-top: 1px solid rgba(92,232,255,.06);
- }
-
- .footer-inner {
- font-family: 'Orbitron', monospace;
- font-size: .58rem;
- letter-spacing: .3rem;
- color: rgba(92,232,255,.25);
- line-height: 2.5;
- }
-
- .footer-divot {
- width: 40px;
- height: 1px;
- background: rgba(92,232,255,.2);
- margin: 1.5rem auto;
- }
-
- /* ── FADE IN ── */
- .fi {
- opacity: 0;
- transform: translateY(28px);
- transition: opacity .9s ease, transform .9s ease;
- }
-
- .fi.on {
- opacity: 1;
- transform: none;
- }
- </style>
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+ .hero { padding: 3rem 1.5rem 7rem; }
+ .title { font-size: clamp(3rem, 18vw, 6rem); letter-spacing:.3rem; }
+ .eyebrow { font-size:.55rem; letter-spacing:.3rem; }
+ .author { font-size:.85rem; }
+ .coords { font-size:.5rem; }
+ .prose { padding: 2.5rem 1.5rem; }
+ .prose p { font-size:.95rem; }
+ .stanza p { font-size:1.05rem; }
+ .scene { height: clamp(180px, 35vw, 300px); }
+ .scene-label { bottom:1rem; right:1rem; font-size:.45rem; }
+ .log { padding:1.2rem 1.4rem; }
+ .log-row { flex-direction:column; gap:.3rem; }
+ .log-day { min-width:auto; }
+ .pull { padding:.4rem 0 .4rem 1.2rem; font-size:.9rem; }
+ .orb { width:80px; height:80px; }
+ .ending { padding:3rem 1.5rem 2rem; }
+ .ending-final { font-size:1rem; padding:1.8rem 1rem; }
+ .ending-final strong { font-size:1.15rem; }
+ .ft { font-size:.5rem; letter-spacing:.2rem; }
+}
+</style>
 </head>
 <body>
 
-<canvas id="starfield"></canvas>
+<canvas id="sf"></canvas>
 
-<div class="content">
+<div class="page">
 
- <!-- ══ HERO ══ -->
- <div class="hero">
- <div class="hero-eyebrow">科幻短篇小说</div>
- <h1 class="hero-title">吞噬</h1>
- <div class="hero-meta">
- <div class="hero-author">初一（2）班 &nbsp;·&nbsp; 叶宇凡</div>
- <div class="hero-coords">SAGITTARIUS A* &nbsp;·&nbsp; 26,000 LY FROM EARTH</div>
- </div>
- <div class="scroll-cue">
- <span>SCROLL</span>
- <i></i>
- </div>
- </div>
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+ <div class="eyebrow">科幻短篇小说</div>
+ <h1 class="title">吞噬</h1>
+ <div class="author">初一（2）班 &nbsp;·&nbsp; 叶宇凡</div>
+ <div class="coords">SAGITTARIUS A* &nbsp;·&nbsp; 26,000 LIGHT YEARS FROM EARTH</div>
+ <div class="cue"><span>SCROLL</span><i></i></div>
+</div>
 
- <!-- ══ OPENING IMAGE ══ -->
- <div class="img-block fi">
- <img
- src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=1400&q=80"
- alt="深空星域">
- <span class="img-caption">DEEP SPACE · UNKNOWN COORDINATES</span>
+<!-- ═══ SCENE 1 · Deep Space ═══ -->
+<div class="scene scene-space fi">
+ <div class="scene-inner">
+ <div class="ring"></div>
+ <div class="ring ring2"></div>
+ <div class="ring ring3"></div>
  </div>
+ <div class="scene-label">DEEP SPACE · UNKNOWN COORDINATES</div>
+</div>
 
- <!-- ══ CHAPTER 1 · 醒来 ══ -->
- <div class="prose fi">
+<!-- ═══ CH 1 · 醒來 ═══ -->
+<div class="prose fi">
  <div class="label">序章 &nbsp;·&nbsp; AWAKENING</div>
  <div class="stanza">
  <p>
@@ -564,25 +457,23 @@
  我似乎想起了什么……
  </p>
  </div>
- </div>
+</div>
 
- <!-- ══ CHAPTER 2 · 档案室 ══ -->
- <div class="prose fi">
+<!-- ═══ CH 2 · 档案室 ═══ -->
+<div class="prose fi">
  <div class="label">档案室 &nbsp;·&nbsp; THE MISSION</div>
  <p>我快步走到飞船的档案室，翻开了一本资料。"飞船上原本有三个人的！怎么会……"我心想，一种不安涌上了心头，我再也平静不下来了，疯了似的奔向了控制室。</p>
  <p>我在屏幕上点了几下，看到屏幕上的信息后，整个人都瘫在了座椅上。冰冷的系统提示音不是时候地说道：</p>
  <div class="pull">
  "飞船目前位于银河系中心的人马座A黑洞附近，距地球约2.6万光年。"
  </div>
- <p>"人马座A"这个名字像烧红的烙铁，狠狠地印上了我的心。距离地球那么远，剩下的这点燃料根本不可能回到地球。看着操控台上的那本飞行日记，心里一直有一种莫名的恐惧。</p>
- <p>翻开飞行日记，日记中是我熟悉的笔迹：</p>
+ <p>"人马座A"这个名字像烧红的烙铁，狠狠地印上了我的心。距离地球那么远，剩下的这点燃料根本不可能回到地球。看着操控台上的那本飞行日记，心里一直有一种莫名的恐惧。翻开飞行日记，日记中是我熟悉的笔迹，写着：</p>
  <div class="pull">
  "地球正在被一种神秘的细胞吞噬，我们的任务是在距离地球约2.6万光年的一个星球上取出克制那种细胞的物质。"
  </div>
 
- <!-- Flight Log -->
- <div class="log-box">
- <div class="log-header">▸ FLIGHT LOG — VESSEL DELTA-01</div>
+ <div class="log">
+ <div class="log-hd">▸ FLIGHT LOG — VESSEL DELTA-01</div>
  <div class="log-row">
  <div class="log-day">DAY 127</div>
  <p class="log-note">飞船以最快速度飞到了火星附近。</p>
@@ -595,117 +486,115 @@
  <div class="log-day">DAY 200</div>
  <p class="log-note">飞船准备穿过土星附近的虫洞，飞向人马座A。</p>
  </div>
- <div class="log-row critical">
+ <div class="log-row crit">
  <div class="log-day">DAY ???</div>
- <p class="log-note">日记中断 — — — 休眠系统启动。</p>
+ <p class="log-note">日记中断 — 休眠系统启动。仅余一人。</p>
  </div>
  </div>
 
  <p>日记本翻到尽头了，我突然想起了后来的事情。后来队长让我留下，他和另外一名队员开着备用飞船引开了虫洞的冲击波，被冲击波击碎。飞船的系统启动了休眠系统，让我活了下来。</p>
  <p>原来我不是幸存者，而是另外两人用生命挡下来的。泪水砸在控制台上，望着控制台上我们三人的合影，我仍然记得队长笑着对我们说：</p>
- <div class="pull" style="border-color: var(--silver); color: var(--text-bright);">
+ <div class="pull pull-white">
  "我们要成为第一个跨出银河系的人类了！"
  </div>
  <p>可如今只剩下我一个在这黑暗中飞行。</p>
- </div>
+</div>
 
- <div class="divider fi"><div class="divider-star"></div></div>
+<div class="div fi"><div class="div-gem"></div></div>
 
- <!-- ══ CHAPTER 3 · 发现 ══ -->
- <div class="prose fi">
+<!-- ═══ CH 3 · 发现 ═══ -->
+<div class="prose fi">
  <div class="label">发现 &nbsp;·&nbsp; DISCOVERY</div>
  <p>突然，飞船的探测系统发现了一个类似飞船的金色物体，距离飞船大约13km。几分钟后，飞船靠近了那个物体，仔细看也没看到怎么进去。我驾驶飞船绕物体飞行一圈，决定停留几天来研究一下。</p>
  <p>第二天，那个金色的物体竟然与我的飞船主动连接。我穿上了宇航服，决定一探究竟。打开了飞船的舱门，眼前是一条金光闪闪的隧道。我沿着隧道走了好久，尽头是一整面玻璃墙。我打开手中的手电筒照向了那面玻璃墙。</p>
- </div>
+</div>
 
- <!-- ══ CHAPTER 4 · 外星接触 ══ -->
- <div class="prose fi">
+<!-- ═══ CH 4 · 接触 ═══ -->
+<div class="prose fi">
  <div class="label">接触 &nbsp;·&nbsp; FIRST CONTACT</div>
- <div class="alien-stage">
+ <div class="orb-stage">
  <div class="orb"></div>
  <p class="orb-desc">在角落中，一个模糊的淡蓝色光影出现在我的眼前——那是我从未见过的外星生命，它像一团流动的星尘，散发着柔和的蓝光。</p>
  </div>
-
  <p>我突然听到有人在轻轻地敲玻璃墙。它似乎只会发出声波。我用我的电脑记录下了声波表示的每个词语。</p>
  <p>它告诉我关于它的故事：它是族群最后的幸存者，它的家园在超新星爆发中毁灭，它与其他三人躲过了灾难，但在一次虫洞穿越后就只剩下它一个了，它已经被那黑洞的引力困了三年了。</p>
-
  <div class="pull pull-blue">
  "120小时后我们就会被黑洞吸走，怎么办？"
  </div>
-
  <p>它似乎看出了我的绝望，周身的蓝光突然变亮，它把自己身内的能量给了我的飞船。我的内心猛地一震，我对它说：</p>
  <div class="pull">
- "你愿意跟我一起走吗？我有办法逃离这里。我们去黑洞附近的星球上取出一种物质，它不仅可以克制地球上的细胞，还可以作为燃料。"
+ "你愿意跟我一起走吗？我有办法逃离这里。我们去黑洞附近的星球上取出一种物质，它不仅可以克制地球上的细胞，还可以作为燃料。"我激动地说道。
  </div>
- </div>
+</div>
 
- <!-- ══ PLANET IMAGE ══ -->
- <div class="img-block fi">
- <img
- src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1400&q=80"
- alt="星球表面">
- <span class="img-caption">UNCHARTED PLANET · NEAR EVENT HORIZON</span>
+<!-- ═══ SCENE 2 · Alien Planet ═══ -->
+<div class="scene scene-planet fi">
+ <div class="scene-inner">
+ <div class="crack c1"></div>
+ <div class="crack c2"></div>
+ <div class="crack c3"></div>
+ <div class="crack c4"></div>
+ <div class="dust" style="left:15%;top:30%;animation-delay:.5s;animation-duration:7s"></div>
+ <div class="dust" style="left:35%;top:55%;animation-delay:1.2s;animation-duration:9s;background:rgba(160,80,255,.35)"></div>
+ <div class="dust" style="left:62%;top:42%;animation-delay:2s;animation-duration:6s"></div>
+ <div class="dust" style="left:80%;top:65%;animation-delay:.8s;animation-duration:11s;background:rgba(160,80,255,.3)"></div>
+ <div class="dust" style="left:48%;top:28%;animation-delay:3s;animation-duration:8s"></div>
  </div>
+ <div class="scene-label">UNCHARTED PLANET · NEAR EVENT HORIZON</div>
+</div>
 
- <!-- ══ CHAPTER 5 · 星球 ══ -->
- <div class="prose fi">
+<!-- ═══ CH 5 · 星球 ═══ -->
+<div class="prose fi">
  <div class="label">星球 &nbsp;·&nbsp; THE PLANET</div>
  <p>两天后，我们来到了那颗星球上。星球表面布满了被黑洞引力冲击过的裂痕，空气中飘浮着紫灰色的灰烬，脚下的岩石踩上去会发出细碎的声响。</p>
  <p>它始终跟在我身后，像小小的星光，驱散了我心底的恐惧。根据坐标我们来到了一个洞穴面前。洞口被一块巨大的陨石堵住，我正犯愁时，它突然发出一阵柔和的蓝光，缓缓推向陨石。坚硬的陨石渐渐碎裂，露出了漆黑的洞口。</p>
-
- <div class="crystal-stage">
- <div class="crystal"></div>
- <div class="crystal-label">SILVER CRYSTAL · ANTI-CELL CATALYST</div>
+ <div class="xtal-stage">
+ <div class="xtal"></div>
+ <div class="xtal-lbl">SILVER CRYSTAL · ANTI-CELL CATALYST</div>
  </div>
-
  <p>洞穴深处，一块拳头大小的银色的晶体飘浮在半空。我刚取下它，地面突然开始抖动，碎石从头顶落下。黑洞的引力开始吸引这颗星球，我们飞快地跑到了飞船上。</p>
  <p>飞船的引擎启动，朝着远离黑洞的地方驶去。可我看着屏幕上的能量条，心又沉了下去——这些能量只够我们撑到一半的路程。</p>
- </div>
+</div>
 
- <div class="divider fi"><div class="divider-star"></div></div>
+<div class="div fi"><div class="div-gem"></div></div>
 
- <!-- ══ CHAPTER 6 · 牺牲 ══ -->
- <div class="prose fi">
+<!-- ═══ CH 6 · 牺牲 ═══ -->
+<div class="prose fi">
  <div class="label">牺牲 &nbsp;·&nbsp; SACRIFICE</div>
  <p>它突然冲向了能量舱，蓝色的能量不断飞出。</p>
-
- <div class="sacrifice-moment">
+ <div class="sacrifice">
  <div class="scream">"不！我们一定还有别的办法！快停下！"</div>
-
- <!-- Scatter particles representing it dissolving into starlight -->
  <div class="scatter">
- <div class="dot" style="--dur:2.8s;--delay:.0s;--tx:6px;--ty:-12px"></div>
- <div class="dot" style="--dur:3.2s;--delay:.2s;--tx:-8px;--ty:-8px"></div>
- <div class="dot" style="--dur:2.5s;--delay:.5s;--tx:10px;--ty:-6px"></div>
- <div class="dot" style="--dur:3.5s;--delay:.1s;--tx:-4px;--ty:-14px"></div>
- <div class="dot" style="--dur:2.9s;--delay:.3s;--tx:7px;--ty:-10px"></div>
- <div class="dot" style="--dur:3.1s;--delay:.6s;--tx:-12px;--ty:-5px"></div>
- <div class="dot" style="--dur:2.7s;--delay:.4s;--tx:3px;--ty:-16px"></div>
- <div class="dot" style="--dur:3.3s;--delay:.7s;--tx:-6px;--ty:-9px"></div>
- <div class="dot" style="--dur:2.6s;--delay:.8s;--tx:14px;--ty:-7px"></div>
- <div class="dot" style="--dur:3.4s;--delay:.2s;--tx:-9px;--ty:-13px"></div>
- <div class="dot" style="--dur:2.4s;--delay:.9s;--tx:5px;--ty:-11px"></div>
- <div class="dot" style="--dur:3.0s;--delay:.1s;--tx:-11px;--ty:-4px"></div>
+ <div class="dot" style="--d:2.8s;--dl:.0s;--tx:6px;--ty:-12px"></div>
+ <div class="dot" style="--d:3.2s;--dl:.2s;--tx:-8px;--ty:-8px"></div>
+ <div class="dot" style="--d:2.5s;--dl:.5s;--tx:10px;--ty:-7px"></div>
+ <div class="dot" style="--d:3.5s;--dl:.1s;--tx:-4px;--ty:-14px"></div>
+ <div class="dot" style="--d:2.9s;--dl:.3s;--tx:7px;--ty:-10px"></div>
+ <div class="dot" style="--d:3.1s;--dl:.6s;--tx:-12px;--ty:-5px"></div>
+ <div class="dot" style="--d:2.7s;--dl:.4s;--tx:3px;--ty:-16px"></div>
+ <div class="dot" style="--d:3.3s;--dl:.7s;--tx:-6px;--ty:-9px"></div>
+ <div class="dot" style="--d:2.6s;--dl:.8s;--tx:14px;--ty:-7px"></div>
+ <div class="dot" style="--d:3.4s;--dl:.2s;--tx:-9px;--ty:-13px"></div>
+ <div class="dot" style="--d:2.4s;--dl:.9s;--tx:5px;--ty:-11px"></div>
+ <div class="dot" style="--d:3.0s;--dl:.1s;--tx:-11px;--ty:-4px"></div>
  </div>
  </div>
-
  <p>可它隔着玻璃碰了碰我的手，像是在告别，也像是在宣告它想牺牲自己的决心。</p>
- <div class="pull pull-blue" style="text-align:center; padding: 1.5rem 1.6rem;">
- 过了一会儿，它化作了点点星光<br>
- 飘散在星空中。
+ <div class="pull pull-blue" style="text-align:center;padding:1.5rem 1.6rem;">
+ 过了一会儿，它化作了点点星光<br>飘散在星空中。
  </div>
- </div>
+</div>
 
- <!-- ══ FINAL IMAGE ══ -->
- <div class="img-block fi">
- <img
- src="https://images.unsplash.com/photo-1484589065579-248aad0d8b13?w=1400&q=80"
- alt="归途星空">
- <span class="img-caption">MILKY WAY · 26,000 LY · HOME</span>
+<!-- ═══ SCENE 3 · Galaxy / Return ═══ -->
+<div class="scene scene-galaxy fi">
+ <div class="scene-inner">
+ <div class="band"></div>
  </div>
+ <div class="scene-label">MILKY WAY · 26,000 LY · HOME</div>
+</div>
 
- <!-- ══ CHAPTER 7 · 归途与尾声 ══ -->
- <div class="prose fi">
+<!-- ═══ CH 7 · 归途 ═══ -->
+<div class="prose fi">
  <div class="label">归途 &nbsp;·&nbsp; RETURN</div>
  <div class="ending">
  <div class="ending-vista">
@@ -723,96 +612,80 @@
  </strong>
  </div>
  </div>
- </div>
+</div>
 
- <!-- ══ FOOTER ══ -->
- <footer class="fi">
- <div class="footer-inner">
+<!-- ═══ FOOTER ═══ -->
+<footer class="fi">
+ <div class="ft">
  <div>✦ &nbsp; DEVOURED BY DARKNESS · SAVED BY LIGHT &nbsp; ✦</div>
- <div class="footer-divot"></div>
- <div>初一（2）班 &nbsp;·&nbsp; 叶宇凡 著 &nbsp;·&nbsp; 科幻短篇</div>
+ <div class="ft-line"></div>
+ <div>初一（2）班 &nbsp;·&nbsp; 叶宇凡 著 &nbsp;·&nbsp; 科幻短篇小说</div>
  </div>
- </footer>
+</footer>
 
-</div><!-- /content -->
+</div><!-- /page -->
 
 <script>
-// ── STARFIELD ──────────────────────────────────────────────
+/* ── STARFIELD ── */
 (function(){
- const cvs = document.getElementById('starfield');
+ const cvs = document.getElementById('sf');
  const ctx = cvs.getContext('2d');
  let W, H, stars = [];
- const N = 320;
+ const N = 340;
 
  function resize(){
  W = cvs.width = window.innerWidth;
  H = cvs.height = window.innerHeight;
  }
 
- function mkStar(){
- const isBlue = Math.random() > .88;
+ function mk(){
+ const blue = Math.random() > .88;
  return {
- x: Math.random() * W,
- y: Math.random() * H,
- r: isBlue ? Math.random() * 1.8 + .6 : Math.random() * 1.2 + .2,
- baseAlpha: Math.random() * .65 + .25,
- phase: Math.random() * Math.PI * 2,
- speed: Math.random() * .015 + .003,
- drift: Math.random() * .04 + .01,
- blue: isBlue
+ x: Math.random()*W, y: Math.random()*H,
+ r: blue ? Math.random()*1.8+.6 : Math.random()*1.1+.2,
+ a: Math.random()*.65+.25,
+ ph: Math.random()*Math.PI*2,
+ sp: Math.random()*.018+.004,
+ dy: Math.random()*.04+.01,
+ blue
  };
  }
 
- function init(){
- stars = [];
- for(let i = 0; i < N; i++) stars.push(mkStar());
- }
+ function init(){ stars=[]; for(let i=0;i<N;i++) stars.push(mk()); }
 
  function draw(){
- ctx.clearRect(0, 0, W, H);
- const now = performance.now() * .001;
-
- stars.forEach(s => {
- s.phase += s.speed;
- const twinkle = (Math.sin(s.phase) + 1) * .5;
- const a = s.baseAlpha * (.55 + twinkle * .45);
-
+ ctx.clearRect(0,0,W,H);
+ stars.forEach(s=>{
+ s.ph += s.sp;
+ const tw = (Math.sin(s.ph)+1)*.5;
+ const a = s.a * (.55 + tw*.45);
  ctx.beginPath();
  ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-
  if(s.blue){
- ctx.shadowColor = '#5ce8ff';
- ctx.shadowBlur = 8;
- ctx.fillStyle = `rgba(92,232,255,${a})`;
+ ctx.shadowColor='#5ce8ff'; ctx.shadowBlur=8;
+ ctx.fillStyle=`rgba(92,232,255,${a})`;
  } else {
- ctx.shadowBlur = 0;
- ctx.fillStyle = `rgba(200,218,238,${a})`;
+ ctx.shadowBlur=0;
+ ctx.fillStyle=`rgba(200,218,238,${a})`;
  }
  ctx.fill();
- ctx.shadowBlur = 0;
-
- s.y += s.drift * .12;
- if(s.y > H + 2){ s.y = -2; s.x = Math.random() * W; }
+ ctx.shadowBlur=0;
+ s.y += s.dy*.1;
+ if(s.y > H+2){ s.y=-2; s.x=Math.random()*W; }
  });
-
  requestAnimationFrame(draw);
  }
 
- resize();
- init();
- draw();
- window.addEventListener('resize', () => { resize(); init(); });
+ resize(); init(); draw();
+ window.addEventListener('resize',()=>{ resize(); init(); });
 })();
 
-// ── SCROLL FADE-IN ────────────────────────────────────────
+/* ── FADE-IN ── */
 (function(){
- const els = document.querySelectorAll('.fi');
- const obs = new IntersectionObserver((entries) => {
- entries.forEach(e => {
- if(e.isIntersecting) e.target.classList.add('on');
- });
- }, { threshold: .12 });
- els.forEach(el => obs.observe(el));
+ const obs = new IntersectionObserver(entries=>{
+ entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('on'); });
+ },{threshold:.1});
+ document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
 })();
 </script>
 </body>
